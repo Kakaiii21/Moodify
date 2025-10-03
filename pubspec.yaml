@@ -41,6 +41,8 @@ dependencies:
   google_nav_bar: ^5.0.7
   on_audio_query: ^2.9.0
   permission_handler: ^12.0.1
+  flutter_launcher_icons: ^0.14.4
+  just_audio: ^0.10.5
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +57,10 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/appIcon.png"
 # The following section is specific to Flutter packages.
 flutter:
 
