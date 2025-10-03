@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:moodify/screens/nowPlaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -88,7 +89,12 @@ class _PlaylistState extends State<Playlist> {
                 trailing: const Icon(Icons.more_horiz),
                 leading: const CircleAvatar(child: Icon(Icons.music_note)),
                 onTap: () {
-                  playSong(song.uri); // ✅ fixed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NowPlaying(songModel: song),
+                    ),
+                  );
                 },
               );
             },
