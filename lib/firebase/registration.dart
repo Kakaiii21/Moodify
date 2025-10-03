@@ -12,6 +12,7 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _loading = false;
@@ -29,12 +30,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
       _passwordController.text.trim(),
     );
 
+    if (user != null) {
+      // Update the display name (username)
+      await user.updateDisplayName(_usernameController.text.trim());
+      await user.reload(); // reload user to apply displayName changes
+    }
+
     setState(() => _loading = false);
 
     if (user == null) {
       setState(() => _error = "Registration failed. Please try again.");
     } else {
-      context.go('/home'); // ✅ go to home after successful registration
+      context.go('/home');
     }
   }
 
@@ -47,6 +54,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Username input
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: "Username",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // Email input
             TextField(
               controller: _emailController,
@@ -88,7 +105,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             // Back to login
             TextButton(
               onPressed: () {
-                context.go('/login'); // ✅ always goes to LoginPage
+                context.go('/login');
               },
               child: const Text("Already have an account? Login"),
             ),

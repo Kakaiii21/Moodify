@@ -1,4 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Old storage permission for Android < 13 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!-- Android 13+ permissions -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:required="false"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" android:required="false"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" android:required="false"/>
+
+
     <application
         android:label="moodify"
         android:name="${applicationName}"

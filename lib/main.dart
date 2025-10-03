@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moodify/firebase/auth_gate.dart';
 import 'package:moodify/firebase/auth_service.dart';
@@ -7,12 +8,24 @@ import 'package:moodify/firebase/home_page.dart';
 import 'package:moodify/firebase/login_page.dart';
 import 'package:moodify/firebase/registration.dart';
 import 'package:moodify/firebase_options.dart';
+import 'package:moodify/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // make status bar transparent
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => ThemeProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 // Router setup
@@ -47,10 +60,8 @@ class _MyAppState extends State<MyApp> {
       create: (context) => AuthService(),
       child: MaterialApp.router(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: Provider.of<ThemeProvider>(context).themeData,
+        debugShowCheckedModeBanner: false,
         routerConfig: _router,
       ),
     );
