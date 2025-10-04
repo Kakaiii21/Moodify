@@ -74,14 +74,19 @@ class _NowPlayingState extends State<NowPlaying> {
       final song = widget.songModelList[_currentIndex];
       _currentSong = song;
 
-      // Stop current playback before setting a new source
-      await widget.audioPlayer.stop();
-      await widget.audioPlayer.setAudioSource(
-        AudioSource.uri(Uri.parse(song.uri!)),
-      );
+      // Only set a new audio source if it's a different song
+      final currentTag = widget.audioPlayer.sequenceState?.currentSource?.tag;
+      if (currentTag?.id != song.id) {
+        await widget.audioPlayer.stop();
+        await widget.audioPlayer.setAudioSource(
+          AudioSource.uri(Uri.parse(song.uri!), tag: song),
+        );
+      }
 
       currentSongNotifier.value = song; // Notify immediately
-      await widget.audioPlayer.play();
+      if (!widget.audioPlayer.playing) {
+        await widget.audioPlayer.play();
+      }
     } on Exception catch (e) {
       log("Cannot play song: $e");
     }

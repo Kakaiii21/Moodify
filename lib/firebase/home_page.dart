@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Container(
         color: Theme.of(context).colorScheme.primary,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
           child: GNav(
             selectedIndex: _selectedIndex,
             backgroundColor: Theme.of(context).colorScheme.primary,
