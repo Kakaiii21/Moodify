@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:moodify/screens/nowPlaying.dart';
@@ -17,16 +15,8 @@ class _PlaylistState extends State<Playlist> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   final AudioPlayer _audioPlayer = AudioPlayer();
 
+  List<SongModel> allsongs = [];
   bool _permissionGranted = false;
-
-  playSong(String? uri) {
-    try {
-      _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
-      _audioPlayer.play();
-    } on Exception {
-      log("Error parsing song");
-    }
-  }
 
   @override
   void initState() {
@@ -35,7 +25,6 @@ class _PlaylistState extends State<Playlist> {
   }
 
   Future<void> requestPermission() async {
-    // Check and request permission for Android 13+
     PermissionStatus status;
     if (await Permission.audio.isGranted) {
       status = PermissionStatus.granted;
@@ -43,22 +32,15 @@ class _PlaylistState extends State<Playlist> {
       status = await Permission.audio.request();
     }
 
-    if (status == PermissionStatus.granted) {
-      setState(() {
-        _permissionGranted = true;
-      });
-    } else {
-      // Show a dialog or fallback UI
-      setState(() {
-        _permissionGranted = false;
-      });
-    }
+    setState(() {
+      _permissionGranted = status == PermissionStatus.granted;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (!_permissionGranted) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: Text("Permission required to access music")),
       );
     }
@@ -79,7 +61,10 @@ class _PlaylistState extends State<Playlist> {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text("No Songs Found"));
           }
+
           final songs = snapshot.data!;
+          allsongs = songs;
+
           return Stack(
             children: [
               ListView.builder(
@@ -97,14 +82,14 @@ class _PlaylistState extends State<Playlist> {
                       nullArtworkWidget: const Icon(Icons.music_note),
                     ),
                     onTap: () async {
-                      await _audioPlayer
-                          .stop(); // stop any currently playing song
+                      await _audioPlayer.stop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => NowPlaying(
-                            songModel: song,
-                            audioPlayer: _audioPlayer, // ✅ reuse same player
+                            songModelList: songs,
+                            audioPlayer: _audioPlayer,
+                            currentIndex: index, // ✅ send index
                           ),
                         ),
                       );
@@ -115,13 +100,47 @@ class _PlaylistState extends State<Playlist> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: GestureDetector(
-                  onTap: () {},
-
+                  onTap: () async {
+                    await _audioPlayer.stop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NowPlaying(
+                          songModelList: allsongs,
+                          audioPlayer: _audioPlayer,
+                          currentIndex: 0,
+                        ),
+                      ),
+                    );
+                  },
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                    child: const CircleAvatar(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 15, 15),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.inversePrimary, // background of button
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.inversePrimary.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
                       radius: 30,
-                      child: Icon(Icons.play_arrow),
+                      backgroundColor:
+                          Colors.transparent, // shows container color
+                      child: Icon(
+                        Icons.play_arrow,
+                        size: 40,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondaryContainer, // icon color
+                      ),
                     ),
                   ),
                 ),
