@@ -13,11 +13,13 @@ class NowPlaying extends StatefulWidget {
     required this.songModelList,
     required this.audioPlayer,
     required this.currentIndex,
+    this.isShufflingInitially = false, // default false
   });
 
   final List<SongModel> songModelList;
   final AudioPlayer audioPlayer;
   final int currentIndex;
+  final bool isShufflingInitially; // <- this is correct here
 
   @override
   State<NowPlaying> createState() => _NowPlayingState();
@@ -41,6 +43,7 @@ class _NowPlayingState extends State<NowPlaying> {
     _currentIndex = widget.currentIndex;
     _currentSong = widget.songModelList[_currentIndex];
     currentSongNotifier = ValueNotifier(_currentSong);
+    _isShuffling = widget.isShufflingInitially;
 
     playSong();
     listenToStreams();
@@ -70,14 +73,15 @@ class _NowPlayingState extends State<NowPlaying> {
     try {
       final song = widget.songModelList[_currentIndex];
       _currentSong = song;
+
+      // Stop current playback before setting a new source
+      await widget.audioPlayer.stop();
       await widget.audioPlayer.setAudioSource(
         AudioSource.uri(Uri.parse(song.uri!)),
       );
-      await widget.audioPlayer.play();
 
-      if (currentSongNotifier.value.id != song.id) {
-        currentSongNotifier.value = song; // ✅ only update when song changes
-      }
+      currentSongNotifier.value = song; // Notify immediately
+      await widget.audioPlayer.play();
     } on Exception catch (e) {
       log("Cannot play song: $e");
     }
@@ -203,14 +207,24 @@ class _NowPlayingState extends State<NowPlaying> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.shuffle,
-                      color: _isShuffling ? activeColor : inactiveColor,
+                  // Shuffle button with circular background when active
+                  GestureDetector(
+                    onTap: toggleShuffle,
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundColor: _isShuffling
+                          ? Theme.of(context).colorScheme.inversePrimary
+                          : Colors.transparent, // no background when inactive
+                      child: Icon(
+                        Icons.shuffle,
+                        color: _isShuffling
+                            ? Theme.of(context).colorScheme.secondaryContainer
+                            : inactiveColor,
+                        size: 30,
+                      ),
                     ),
-                    iconSize: 35,
-                    onPressed: toggleShuffle,
                   ),
+
                   IconButton(
                     icon: Icon(
                       Icons.skip_previous_rounded,
@@ -282,15 +296,9 @@ class SongArtwork extends StatefulWidget {
   State<SongArtwork> createState() => _SongArtworkState();
 }
 
-class _SongArtworkState extends State<SongArtwork>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _SongArtworkState extends State<SongArtwork> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return Column(
       children: [
         Container(
@@ -309,6 +317,9 @@ class _SongArtworkState extends State<SongArtwork>
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: QueryArtworkWidget(
+              key: ValueKey(
+                widget.song.id,
+              ), // ensures rebuild when song changes
               id: widget.song.id,
               type: ArtworkType.AUDIO,
               artworkHeight: 300,
@@ -317,12 +328,10 @@ class _SongArtworkState extends State<SongArtwork>
               nullArtworkWidget: Container(
                 height: 300,
                 width: 300,
-                color: Theme.of(
-                  context,
-                ).colorScheme.surface, // optional background color
+                color: Theme.of(context).colorScheme.surface,
                 child: Icon(
                   Icons.music_note,
-                  size: 100, // smaller than container
+                  size: 100,
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),

@@ -102,13 +102,20 @@ class _PlaylistState extends State<Playlist> {
                 child: GestureDetector(
                   onTap: () async {
                     await _audioPlayer.stop();
+
+                    // Create a copy and shuffle it
+                    final shuffledSongs = List<SongModel>.from(allsongs);
+                    shuffledSongs.shuffle();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => NowPlaying(
-                          songModelList: allsongs,
+                          songModelList: shuffledSongs,
                           audioPlayer: _audioPlayer,
-                          currentIndex: 0,
+                          currentIndex:
+                              0, // start from first song of shuffled list
+                          isShufflingInitially: true, // optional flag
                         ),
                       ),
                     );
@@ -117,9 +124,7 @@ class _PlaylistState extends State<Playlist> {
                     margin: const EdgeInsets.fromLTRB(0, 0, 15, 15),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.inversePrimary, // background of button
+                      color: Theme.of(context).colorScheme.inversePrimary,
                       boxShadow: [
                         BoxShadow(
                           color: Theme.of(
@@ -132,14 +137,11 @@ class _PlaylistState extends State<Playlist> {
                     ),
                     child: CircleAvatar(
                       radius: 30,
-                      backgroundColor:
-                          Colors.transparent, // shows container color
+                      backgroundColor: Colors.transparent,
                       child: Icon(
-                        Icons.play_arrow,
+                        Icons.shuffle,
                         size: 40,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondaryContainer, // icon color
+                        color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
                     ),
                   ),
