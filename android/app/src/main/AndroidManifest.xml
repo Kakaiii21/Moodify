@@ -10,7 +10,7 @@
 
 
     <application
-        android:label="moodify"
+        android:label="Moodify"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
