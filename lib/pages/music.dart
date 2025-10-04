@@ -16,6 +16,7 @@ class Playlist extends StatefulWidget {
 class _PlaylistState extends State<Playlist> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   final AudioPlayer _audioPlayer = AudioPlayer();
+
   bool _permissionGranted = false;
 
   playSong(String? uri) {
@@ -79,27 +80,53 @@ class _PlaylistState extends State<Playlist> {
             return const Center(child: Text("No Songs Found"));
           }
           final songs = snapshot.data!;
-          return ListView.builder(
-            itemCount: songs.length,
-            itemBuilder: (context, index) {
-              final song = songs[index];
-              return ListTile(
-                title: Text(song.displayNameWOExt),
-                subtitle: Text(song.artist ?? "Unknown Artist"),
-                trailing: const Icon(Icons.more_horiz),
-                leading: const CircleAvatar(
-                  child: const Icon(Icons.music_note),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NowPlaying(songModel: song),
+          return Stack(
+            children: [
+              ListView.builder(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                itemCount: songs.length,
+                itemBuilder: (context, index) {
+                  final song = songs[index];
+                  return ListTile(
+                    title: Text(song.displayNameWOExt),
+                    subtitle: Text(song.artist ?? "Unknown Artist"),
+                    trailing: const Icon(Icons.more_horiz),
+                    leading: QueryArtworkWidget(
+                      id: song.id,
+                      type: ArtworkType.AUDIO,
+                      nullArtworkWidget: const Icon(Icons.music_note),
                     ),
+                    onTap: () async {
+                      await _audioPlayer
+                          .stop(); // stop any currently playing song
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NowPlaying(
+                            songModel: song,
+                            audioPlayer: _audioPlayer, // ✅ reuse same player
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: GestureDetector(
+                  onTap: () {},
+
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
+                    child: const CircleAvatar(
+                      radius: 30,
+                      child: Icon(Icons.play_arrow),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
