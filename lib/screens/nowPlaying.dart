@@ -146,6 +146,9 @@ class _NowPlayingState extends State<NowPlaying> {
     final color = Theme.of(context).colorScheme.inversePrimary;
 
     return Scaffold(
+      resizeToAvoidBottomInset:
+          true, // ✅ allows screen to resize when keyboard appears
+
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       body: SafeArea(
         child: Padding(
@@ -314,22 +317,25 @@ class _SongArtworkState extends State<SongArtwork> {
                 color: Theme.of(
                   context,
                 ).colorScheme.inversePrimary.withOpacity(0.3),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
+                blurRadius: 80,
+                offset: const Offset(0, 15),
               ),
             ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: QueryArtworkWidget(
-              key: ValueKey(
-                widget.song.id,
-              ), // ensures rebuild when song changes
+              key: ValueKey(widget.song.id),
               id: widget.song.id,
               type: ArtworkType.AUDIO,
               artworkHeight: 300,
               artworkWidth: 300,
               artworkFit: BoxFit.cover,
+
+              // ✅ Higher-quality artwork settings:
+              quality: 100, // 0–100 (default is 50)
+              size: 800, // request larger image resolution (default is 200)
+
               nullArtworkWidget: Container(
                 height: 300,
                 width: 300,
