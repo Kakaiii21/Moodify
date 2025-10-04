@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:moodify/screens/nowPlaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,7 +15,17 @@ class Playlist extends StatefulWidget {
 
 class _PlaylistState extends State<Playlist> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   bool _permissionGranted = false;
+
+  playSong(String? uri) {
+    try {
+      _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
+      _audioPlayer.play();
+    } on Exception {
+      log("Error parsing song");
+    }
+  }
 
   @override
   void initState() {
@@ -70,10 +84,20 @@ class _PlaylistState extends State<Playlist> {
             itemBuilder: (context, index) {
               final song = songs[index];
               return ListTile(
-                leading: const Icon(Icons.music_note),
                 title: Text(song.displayNameWOExt),
                 subtitle: Text(song.artist ?? "Unknown Artist"),
                 trailing: const Icon(Icons.more_horiz),
+                leading: const CircleAvatar(
+                  child: const Icon(Icons.music_note),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NowPlaying(songModel: song),
+                    ),
+                  );
+                },
               );
             },
           );
