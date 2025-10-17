@@ -132,9 +132,7 @@ class _PlaylistState extends State<Playlist> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: TextStyle(
-                            color: isPlaying
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
+                            color: isPlaying ? Colors.purpleAccent : null,
                             fontWeight: isPlaying
                                 ? FontWeight.bold
                                 : FontWeight.normal,
@@ -146,7 +144,7 @@ class _PlaylistState extends State<Playlist> {
                           maxLines: 1,
                           style: TextStyle(
                             color: isPlaying
-                                ? Theme.of(context).colorScheme.primary
+                                ? Colors.purpleAccent
                                 : Colors.grey.shade600,
                           ),
                         ),
