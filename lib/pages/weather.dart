@@ -124,7 +124,72 @@ class _WeatherPageState extends State<WeatherPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
+
+                    // 💧 Humidity & 🌬 Wind Speed
+                    if (_weather != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // 💧 Humidity
+                          Column(
+                            children: [
+                              const Icon(
+                                Icons.water_drop,
+                                color: Colors.blueAccent,
+                                size: 28,
+                              ),
+                              Text(
+                                '${_weather!.humidity}%',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                              Text(
+                                "Humidity",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 50),
+                          // 🌬 Wind Speed
+                          Column(
+                            children: [
+                              const Icon(
+                                Icons.air,
+                                color: Colors.lightBlueAccent,
+                                size: 28,
+                              ),
+                              Text(
+                                '${_weather!.windSpeed} m/s',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                              Text(
+                                "Wind",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                   ],
                 ),
         ),
