@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,20 @@ class AuthService with ChangeNotifier {
         email: email,
         password: password,
       );
-      return userCredential.user;
+
+      final user = userCredential.user;
+
+      if (user != null) {
+        // Save user data to Firestore
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'email': email,
+          'username': '', // You’ll fill this in from registration.dart
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      return user;
     } catch (e) {
       debugPrint('Registration error: $e');
       return null;

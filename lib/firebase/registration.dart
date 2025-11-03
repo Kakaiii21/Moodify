@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -31,18 +32,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
 
     if (user != null) {
-      // Update the display name (username)
-      await user.updateDisplayName(_usernameController.text.trim());
-      await user.reload(); // reload user to apply displayName changes
+      final username = _usernameController.text.trim();
+
+      // ✅ Update Firebase Auth display name
+      await user.updateDisplayName(username);
+      await user.reload();
+
+      // ✅ Update Firestore document with username
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
+        {'username': username},
+      );
+
+      context.go('/home');
+    } else {
+      setState(() => _error = "Registration failed. Please try again.");
     }
 
     setState(() => _loading = false);
-
-    if (user == null) {
-      setState(() => _error = "Registration failed. Please try again.");
-    } else {
-      context.go('/home');
-    }
   }
 
   @override

@@ -42,54 +42,101 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(title: const Text("Login")),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Email input
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
+                child: Image.asset("assets/images/logo.png", height: 250),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Password input
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
+              // Email input
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: "Email",
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Error message
-            if (_error != null)
-              Text(_error!, style: const TextStyle(color: Colors.red)),
+              // Password input
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
+              // Error message
+              if (_error != null)
+                Text(_error!, style: const TextStyle(color: Colors.red)),
 
-            // Login button
-            _loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(onPressed: _login, child: const Text("Login")),
+              const SizedBox(height: 1),
 
-            const SizedBox(height: 16),
+              // Login button
+              _loading
+                  ? const CircularProgressIndicator()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 1),
+                      child: SizedBox(
+                        width: double.infinity, // makes it full width
+                        height: 50, // increases height
+                        child: ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.inversePrimary,
+                          ),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondaryContainer,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      decoration: TextDecoration.underline,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
 
-            // Register navigation
-            TextButton(
-              onPressed: () {
-                context.go(
-                  '/register',
-                ); // or context.push('/register') if you want back button support
-              },
-              child: const Text("Don't have an account? Register"),
-            ),
-          ],
+              // Register navigation
+              TextButton(
+                onPressed: () {
+                  context.go(
+                    '/register',
+                  ); // or context.push('/register') if you want back button support
+                },
+                child: Text(
+                  "Don't have an account? Register",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

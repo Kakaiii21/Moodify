@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moodify/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -114,7 +115,9 @@ class _SettingsPageState extends State<SettingsPage> {
               InkWell(
                 onTap: () async {
                   await authService.signOut();
-                  Navigator.of(context).pushReplacementNamed('/login');
+                  if (context.mounted) {
+                    context.go('/login');
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
