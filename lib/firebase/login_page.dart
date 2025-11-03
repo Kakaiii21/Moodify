@@ -84,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 1),
                       child: SizedBox(
-                        width: double.infinity, // makes it full width
-                        height: 50, // increases height
+                        width: double.infinity,
+                        height: 50,
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
@@ -119,7 +119,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
               // Register navigation
               TextButton(
@@ -132,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   "Don't have an account? Register",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),

@@ -57,65 +57,94 @@ class _RegistrationPageState extends State<RegistrationPage> {
       appBar: AppBar(title: const Text("Register")),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Username input
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: "Username",
-                border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
+                child: Image.asset("assets/images/logo.png", height: 250),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Email input
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+              // Username input
+              TextField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  labelText: "Username",
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Password input
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
+              // Email input
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: "Email",
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Error message
-            if (_error != null)
-              Text(_error!, style: const TextStyle(color: Colors.red)),
+              // Password input
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
+              // Error message
+              if (_error != null)
+                Text(_error!, style: const TextStyle(color: Colors.red)),
 
-            // Register button
-            _loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _register,
-                    child: const Text("Register"),
+              const SizedBox(height: 16),
+
+              // Register button
+              _loading
+                  ? CircularProgressIndicator()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: _register,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.inversePrimary,
+                          ),
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondaryContainer,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+              // Back to login
+              TextButton(
+                onPressed: () {
+                  context.go('/login');
+                },
+                child: Text(
+                  "Already have an account? Login",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    fontWeight: FontWeight.w800,
                   ),
-
-            const SizedBox(height: 16),
-
-            // Back to login
-            TextButton(
-              onPressed: () {
-                context.go('/login');
-              },
-              child: const Text("Already have an account? Login"),
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
