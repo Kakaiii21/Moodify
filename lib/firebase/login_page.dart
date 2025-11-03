@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moodify/firebase/forgot_password.dart';
 import 'package:provider/provider.dart';
 
 import 'auth_service.dart';
@@ -108,7 +109,14 @@ class _LoginPageState extends State<LoginPage> {
               Align(
                 alignment: Alignment.center,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotPasswordPage(),
+                      ),
+                    );
+                  },
                   child: Text(
                     "Forgot Password?",
                     style: TextStyle(
