@@ -27,6 +27,8 @@ class _WeatherPageState extends State<WeatherPage> {
     try {
       String cityName = await _weatherService.getCurrentCity();
       final weather = await _weatherService.getWeather(cityName);
+      print("🌦️ Weather condition: ${weather.mainCondition}");
+
       setState(() {
         _weather = weather;
         _isLoading = false;
@@ -41,17 +43,43 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   // choose Lottie animation based on weather condition
-  String _getWeatherAnimation(String mainCondition) {
-    if (mainCondition.toLowerCase().contains("cloud")) {
-      return 'https://assets10.lottiefiles.com/packages/lf20_jmBauI.json';
-    } else if (mainCondition.toLowerCase().contains("rain")) {
-      return 'https://assets10.lottiefiles.com/packages/lf20_rpC1Rd.json';
-    } else if (mainCondition.toLowerCase().contains("clear")) {
-      return 'https://assets10.lottiefiles.com/packages/lf20_xRmNN8.json';
-    } else if (mainCondition.toLowerCase().contains("snow")) {
-      return 'https://assets10.lottiefiles.com/packages/lf20_UJNc2t.json';
+  // 🔹 Helper: Get emoji for condition
+  String _getWeatherEmoji(String condition) {
+    final cond = condition.toLowerCase();
+    if (cond.contains('clear')) return '☀️';
+    if (cond.contains('cloud')) return '☁️';
+    if (cond.contains('rain') || cond.contains('drizzle')) return '🌧️';
+    if (cond.contains('thunder')) return '⛈️';
+    if (cond.contains('snow')) return '❄️';
+    if (cond.contains('mist') ||
+        cond.contains('fog') ||
+        cond.contains('haze')) {
+      return '🌫️';
+    }
+    return '🌈';
+  }
+
+  // 🔹 Helper: Get animation for condition
+  String _getWeatherAnimation(String condition) {
+    final cond = condition.toLowerCase();
+    print("🌤 Condition detected: $cond");
+
+    if (cond.contains('clear')) {
+      return 'https://assets2.lottiefiles.com/packages/lf20_ure1m7aw.json'; // ☀️
+    } else if (cond.contains('cloud')) {
+      return 'https://assets9.lottiefiles.com/packages/lf20_jmBauI.json'; // ☁️
+    } else if (cond.contains('rain') || cond.contains('drizzle')) {
+      return 'https://assets2.lottiefiles.com/packages/lf20_xf6zzb.json'; // 🌧️
+    } else if (cond.contains('thunder')) {
+      return 'https://assets2.lottiefiles.com/packages/lf20_rpC1Rd.json'; // ⚡
+    } else if (cond.contains('snow')) {
+      return 'https://assets9.lottiefiles.com/packages/lf20_SkE6Y4.json'; // ❄️
+    } else if (cond.contains('mist') ||
+        cond.contains('fog') ||
+        cond.contains('haze')) {
+      return 'https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json'; // 🌫️
     } else {
-      return 'https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json';
+      return 'https://assets9.lottiefiles.com/packages/lf20_jmBauI.json'; // default ☁️
     }
   }
 

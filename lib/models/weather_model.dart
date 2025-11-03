@@ -14,10 +14,17 @@ class Weather {
   });
 
   factory Weather.fromJson(Map<String, dynamic> json) {
+    final weatherData = json['weather'][0];
+    final main = weatherData['main']?.toString().toLowerCase() ?? '';
+    final desc = weatherData['description']?.toString().toLowerCase() ?? '';
+
+    // Prefer description if available
+    final condition = desc.isNotEmpty ? desc : main;
+
     return Weather(
       cityName: json['name'],
       temperature: json['main']['temp'].toDouble(),
-      mainCondition: json['weather'][0]['main'],
+      mainCondition: condition,
       humidity: json['main']['humidity'],
       windSpeed: json['wind']['speed'].toDouble(),
     );

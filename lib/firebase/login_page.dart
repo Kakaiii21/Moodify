@@ -34,6 +34,9 @@ class _LoginPageState extends State<LoginPage> {
 
     if (user == null) {
       setState(() => _error = "Login failed. Please check your credentials.");
+    } else {
+      // ✅ Navigate to home or dashboard
+      context.go('/home'); // or whatever your main route is
     }
   }
 

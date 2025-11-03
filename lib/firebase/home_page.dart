@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:moodify/pages/diary.dart';
 import 'package:moodify/pages/music.dart';
 import 'package:moodify/pages/weather.dart';
 
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const Playlist(),
     const WeatherPage(),
-    Center(child: Text("Diary Page")),
+    const DiaryPage(),
     const SettingsPage(), // index 3
   ];
 
